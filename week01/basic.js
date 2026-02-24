@@ -6,6 +6,16 @@
 
 /* let, const */
 
+let a = 7
+
+const msg = 'hello'
+
+a = a + 1
+msg = 'hi'
+
+console.log(a)
+console.log(msg)
+
 // EXPRESSIONS: OPERATORS and ASSIGNMENTS
 
 /* automatic type conversions */

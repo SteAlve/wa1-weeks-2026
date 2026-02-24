@@ -16,7 +16,49 @@ Develop a small JavaScript program to manage the scores given to your user on we
 */
 
 
-let scores = [3, -2, 10, 0, -5, 7, 4, -1, 9, 6] ;
+const scores = [3, -2, 10, 0, -5, -8, 7, 4, -1, 9, 6] ;
 
+const newscores = []
+
+for (const value of scores) {
+  if (value >= 0) {
+    newscores.push(value)
+  }
+}
+
+for (const c of [1,2]) {
+  const smallest = Math.min(...newscores)
+  const pos_smallest = newscores.indexOf(smallest)
+  console.log("Smallest", smallest, "at position", pos_smallest)
+  console.log(`The smallest value is ${smallest} and is at position ${pos_smallest}`)
+  newscores.splice(pos_smallest,1)
+}
+
+let avg = 0.0
+for (const value of newscores) {
+  avg += value
+}
+avg /= newscores.length
+avg = Math.round(avg)
+
+console.log(avg)
+
+while( scores.length > newscores.length) {
+  newscores.push(avg)
+}
+
+
+// const newscores = [...scores]  // make a copy
+
+// for (let i = 0 ; i<newscores.length; i++ ) {
+//   const value = newscores[i]
+//   if(value<0) {
+//     newscores.splice(i, 1)
+//   }
+//   console.log(value)
+// }
 console.log(scores)
+console.log(newscores)
+
+// console.log(scores)
 

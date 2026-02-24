@@ -17,5 +17,16 @@ Develop a small JS program to manage the list of users in a website.
 */
 
 const names = "Luigi De Russis, Francesca Russo, Fulvio Corno, Luca Scibetta, Alberto Monge Roffarello" ;
+const list_names = names.split(',')
+// for (let i=0; i<list_names.length; i++) {
+//   list_names[i] = list_names[i].trim()
+// }
+
+const list_2 = []
+for( const name of list_names )
+  list_2.push(name.trim())
+
+
+
 
 console.log(names)
