@@ -16,6 +16,7 @@ Develop a small JS program to manage the list of users in a website.
   - Extra: in alphabetical order of acronym.
 */
 
+// split the string into the indivudual names
 const names = "Luigi De Russis, Francesca Russo, Fulvio Corno, Luca Scibetta, Alberto Monge Roffarello" ;
 
 const list_names = names.split(",")
