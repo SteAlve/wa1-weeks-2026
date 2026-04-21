@@ -2,6 +2,7 @@ import {Row, Col, Table, Button, Form} from "react-bootstrap"
 import {ArrowUpSquare, Pencil, Trash, Plus} from "react-bootstrap-icons"
 import { useState, useContext } from "react";
 import UserContext from "../contexts/UserContext";
+import { useParams } from 'react-router'
 
 
 function AnswersTable (props){
@@ -82,15 +83,6 @@ function AddOrEditAnswerForm(props) {
 
     }
 
-    // return <form onSubmit={submitAction}>
-    //     <Row><Col>
-    //         Text: <input type='text' value={text} onChange={(e) => setText(e.target.value)} />
-    //     </Col></Row>
-    //     <Row><Col>
-    //         <input type='submit' value='Add Answer' />
-    //     </Col></Row>
-    // </form>
-
     return <>
     <div>{error}</div>
     <Form onSubmit={submitAction}>
@@ -108,40 +100,6 @@ function AddOrEditAnswerForm(props) {
 
  
 }
-
-function AddAnswerFormUncontrolled(props) {
-
-    const submitAction = (event) => {
-        event.preventDefault()
-
-        // console.log(event.target)
-        // console.log(event.target.text)
-        // console.log(event.target.text.value)
-        const text = event.target.text.value
-
-        // // validate data
-
-        // // update the list of Answers in the main state
-        props.addAnswer(text)
-
-        // // close the form
-        props.setMode('display')
-    }
-
-    return <Form onSubmit={submitAction}>
-        <Form.Group>
-            <Form.Label>Answer text</Form.Label>
-            <Form.Control name='text' type='text' placeholder="your answer" ></Form.Control>
-        </Form.Group>
-        <Button variant="primary" type="submit">
-            Submit
-        </Button>
-
-    </Form>
-
- 
-}
-
 
 function AnswerRow (props){
     const ans = props.a;
@@ -175,14 +133,19 @@ function AnswersDisplay (props){
 
     const [mode, setMode] = useState('display') ;
 
+    const { questionId } = useParams()
+
+    const my_answers =props.answers // all of them
+    // const my_answers = props.answers.filter( ans => ans.questionId == questionId)
+
     return (
         <>
         <Row>
-            <Col as='h2' className='text-start'>Answers:</Col>
+            <Col as='h2' className='text-start'>Answers for question {questionId}:</Col>
             
         </Row>
         <Row>
-            <AnswersTable mode={mode} setMode={setMode} answers={props.answers} upVote={props.upVote} delAnswer={props.delAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer}></AnswersTable>
+            <AnswersTable mode={mode} setMode={setMode} answers={my_answers} upVote={props.upVote} delAnswer={props.delAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer}></AnswersTable>
         </Row>
         </>
     )

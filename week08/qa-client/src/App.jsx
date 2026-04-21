@@ -6,14 +6,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Question, Answer } from './models/QAModels.js'
 import Footer from './components/Footer.jsx';
 import Header from './components/Header.jsx'
-import QuestionDisplay from './components/QuestionDisplay.jsx';
+import { QuestionDisplay, QuestionsList } from './components/QuestionDisplay.jsx';
 import AnswersDisplay from './components/AnswersDisplay.jsx'
 import { useState } from 'react';
+
+import { Routes, Route, Outlet, useNavigate} from 'react-router'
 
 import dayjs from 'dayjs';
 import { Container } from 'react-bootstrap';
 import UserContext from './contexts/UserContext.js';
 
+import { useContext } from 'react'
 
 function App() {
   const fakeQuestion = new Question(1, 'how are you?', 'me@mail.com', 24, '2025-04-01')
@@ -24,11 +27,14 @@ function App() {
   const [question, setQuestion] = useState(fakeQuestion)
   const [answers, setAnswers] = useState(fakeAnswers)
 
+  const navigate = useNavigate()
+
   // Currently logged-in user
   const [user, setUser] = useState( {id: undefined, email: undefined, name: undefined} )
 
   const doLogin = () => {
     setUser( {id: 100, email: 'a@b.com', name:'User-A'} )
+    navigate('/home')
   }
 
   const upVote = (id) => {
@@ -68,16 +74,58 @@ function App() {
   return (
     <UserContext.Provider value={user}>
       <Container>
-        <Header doLogin={doLogin}></Header>
-
-        <QuestionDisplay question={question}></QuestionDisplay>
-
-        <AnswersDisplay answers={answers} upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer}></AnswersDisplay>
-        {/* <Footer></Footer> */}
-
+        <Routes>
+          <Route path='/' element={<MainLayout doLogin={doLogin}  />}>
+            <Route index element={<LoginView/>}/>
+            <Route path='home' element={<HomeView questions={[question]}/>}/>
+            <Route path='answers/:questionId' element={<AnswersDisplay answers={answers}
+            upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer}/>}/>
+            <Route path='answers/:questionId/new' element={<AddAnswerForm/>}
+          </Route>
+        </Routes>
       </Container>
     </UserContext.Provider>
   )
 }
 
+function MainLayout(props) {
+  return <>
+    <Header doLogin={props.doLogin}></Header>
+    <Outlet/>
+    <Footer></Footer>
+  </>
+}
+
+function LoginView(props) {
+
+  // if user.id is not undefined, navigate to /home
+
+  return "Login View : main welcome page for anonymous users"
+}
+
+function HomeView(props) {
+
+  // if user.id is not defined, navigate to /
+  // const user = useContext(UserContext)
+  // const navigate = useNavigate()
+
+  // if (!user.id)
+  //   navigate('/')
+
+  return <QuestionsList questions = {props.questions}/>
+}
+
+
+
+
 export default App
+
+
+        // <Header doLogin={doLogin}></Header>
+
+        // <QuestionDisplay question={question}></QuestionDisplay>
+
+        // <AnswersDisplay answers={answers} upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer}></AnswersDisplay>
+        // {/* <Footer></Footer> */}
+
+

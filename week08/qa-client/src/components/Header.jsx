@@ -2,16 +2,17 @@ import { Navbar, Container, Button } from "react-bootstrap"
 import { useContext } from "react"
 
 import UserContext from "../contexts/UserContext"
-
+import { Link } from 'react-router'
+ 
 function Header (props){
 
   const user = useContext(UserContext)
 
 return(
 
-    <Navbar bg="primary">
+    <Navbar >
         <Container fluid>
-          <h1 style={{color: 'white'}} >HeapOverrun </h1>
+          <h1 style={{color: 'white'}} ><Link to='/home'>HeapOverrun</Link></h1>
           <p>{user.name || <LoginButton doLogin={props.doLogin}/>}</p>
         </Container>
       </Navbar>)

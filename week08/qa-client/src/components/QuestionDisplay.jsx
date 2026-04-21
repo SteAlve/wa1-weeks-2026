@@ -1,4 +1,5 @@
 import {Container, Row, Col} from 'react-bootstrap';
+import { Link } from 'react-router'
 
 function QuestionDisplay (props){
     const q = props.question;
@@ -22,4 +23,10 @@ function QuestionDisplay (props){
    //q.author
 }
 
-export default QuestionDisplay
+function QuestionsList(props) {
+    return <ul>
+        {props.questions.map(q => <li key={q.id}><Link to={`/answers/${q.id}`}>{q.text}</Link></li>)}
+    </ul> 
+}
+
+export { QuestionDisplay, QuestionsList }
