@@ -12,6 +12,7 @@ import { useState } from 'react';
 
 import dayjs from 'dayjs';
 import { Container } from 'react-bootstrap';
+import UserContext from './contexts/UserContext.js';
 
 
 function App() {
@@ -23,6 +24,12 @@ function App() {
   const [question, setQuestion] = useState(fakeQuestion)
   const [answers, setAnswers] = useState(fakeAnswers)
 
+  // Currently logged-in user
+  const [user, setUser] = useState( {id: undefined, email: undefined, name: undefined} )
+
+  const doLogin = () => {
+    setUser( {id: 100, email: 'a@b.com', name:'User-A'} )
+  }
 
   const upVote = (id) => {
     setAnswers( ans => ans.map( a => (a.id==id ? {...a, score: a.score+1} : a)))
@@ -33,13 +40,17 @@ function App() {
   }
 
   const addAnswer = (text) => {
+
+    if(user.id == undefined) {
+      throw new Error("No User ID")
+    }
     const newId = Math.max( ... answers.map(a=>a.id) ) + 1
 
     const ans = new Answer(
         newId, // the ID must be assigned by whoever is managing the list
         text, // coming from the user (the form)
-        'a@b.com', // must come from user login
-        1, // userId -> from login
+        user.email, // must come from user login
+        user.id, // userId -> from login
         dayjs(), // date: today
         0 // score
     )
@@ -55,15 +66,17 @@ function App() {
   }
 
   return (
-    <Container>
-    <Header></Header>
-    
-    <QuestionDisplay question={question}></QuestionDisplay>
-    
-    <AnswersDisplay answers={answers} upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer}></AnswersDisplay>
-    {/* <Footer></Footer> */}
-      
-    </Container>
+    <UserContext.Provider value={user}>
+      <Container>
+        <Header doLogin={doLogin}></Header>
+
+        <QuestionDisplay question={question}></QuestionDisplay>
+
+        <AnswersDisplay answers={answers} upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer}></AnswersDisplay>
+        {/* <Footer></Footer> */}
+
+      </Container>
+    </UserContext.Provider>
   )
 }
 
