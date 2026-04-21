@@ -18,4 +18,4 @@ function Question(id, text, email, userId, date) {
 }
 
 
-export {Question, Answer};
+export { Question, Answer };

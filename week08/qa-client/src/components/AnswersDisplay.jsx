@@ -1,15 +1,16 @@
-import {Row, Col, Table, Button, Form} from "react-bootstrap"
-import {ArrowUpSquare, Pencil, Trash, Plus} from "react-bootstrap-icons"
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
+import { Button, Col, Form, Row, Table } from "react-bootstrap";
+import { ArrowUpSquare, Pencil, Plus, Trash } from "react-bootstrap-icons";
+import { useParams } from 'react-router';
+
 import UserContext from "../contexts/UserContext";
-import { useParams } from 'react-router'
 
 
-function AnswersTable (props){
+function AnswersTable(props) {
 
     const answers = props.answers;
-    const enableButtons = (props.mode=='display')
-    const [editedAnswer, setEditedAnswer] = useState() ;
+    const enableButtons = (props.mode == 'display')
+    const [editedAnswer, setEditedAnswer] = useState();
 
     const user = useContext(UserContext)
 
@@ -18,42 +19,35 @@ function AnswersTable (props){
         setEditedAnswer(answer)
     }
 
-    return <><Table >
-        <thead >
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Text</th>
-                <th scope="col">Author</th>
-                <th scope="col">Score</th>
-                <th scope="col">Actions</th>
-              </tr>
+    return <>
+        <Table >
+            <thead >
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Text</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Actions</th>
+                </tr>
             </thead>
             <tbody>
-                {answers.map((a)=><AnswerRow key ={a.id} a={a}
-                 upVote={props.upVote} delAnswer={props.delAnswer}
-                 enableButtons={enableButtons}
-                 enterEditMode={enterEditMode}></AnswerRow>)}
+                {answers.map((a) => <AnswerRow key={a.id} a={a}
+                    upVote={props.upVote} delAnswer={props.delAnswer}
+                    enableButtons={enableButtons}
+                    enterEditMode={enterEditMode}></AnswerRow>)}
                 <tr><td colspan='4'></td>
-                <td><Button disabled={!enableButtons || !user.id}
-                variant='success' onClick={()=>props.setMode('add')}><Plus/></Button> <></></td></tr>
+                    <td><Button disabled={!enableButtons || !user.id}
+                        variant='success' onClick={() => props.setMode('add')}><Plus /></Button> <></></td></tr>
             </tbody>
-    </Table>
-
-{/* disabled={!enableButtons || !user.id} */}
-
-    {/* { props.mode == 'add' && <AddOrEditAnswerForm goal='add' addAnswer={props.addAnswer} setMode={props.setMode}/> }
-    { props.mode == 'edit' && <AddOrEditAnswerForm key={editedAnswer.id} goal='edit' editedAnswer={editedAnswer} updateAnswer={props.updateAnswer} setMode={props.setMode}/> } */}
-
-    { (props.mode == 'edit' || props.mode=='add') && <AddOrEditAnswerForm key={editedAnswer?.id} goal={props.mode} editedAnswer={editedAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer} setMode={props.setMode}/> }
-
-
+        </Table>
+        {(props.mode == 'edit' || props.mode == 'add') && <AddOrEditAnswerForm key={editedAnswer?.id} goal={props.mode} editedAnswer={editedAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer} setMode={props.setMode} />}
     </>
 
 }
 
 function AddOrEditAnswerForm(props) {
 
-    const [text, setText] = useState(props.goal=='edit' ? props.editedAnswer.text : '')
+    const [text, setText] = useState(props.goal == 'edit' ? props.editedAnswer.text : '')
 
     const [error, setError] = useState("")
 
@@ -84,69 +78,68 @@ function AddOrEditAnswerForm(props) {
     }
 
     return <>
-    <div>{error}</div>
-    <Form onSubmit={submitAction}>
-        <Form.Group>
-            <Form.Label>Answer text</Form.Label>
-            <Form.Control type='text' placeholder="your answer" value={text} onChange={(e) => setText(e.target.value)}></Form.Control>
-        </Form.Group>
-        <Button variant="primary" type="submit">
-            {props.goal=='add'? "Add": "Update" }
-        </Button>
-        <Button type="cancel" onClick={()=>props.setMode("display")}>
-            Cancel
-        </Button>
-    </Form></>
+        <div>{error}</div>
+        <Form onSubmit={submitAction}>
+            <Form.Group>
+                <Form.Label>Answer text</Form.Label>
+                <Form.Control type='text' placeholder="your answer" value={text} onChange={(e) => setText(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Button variant="primary" type="submit">
+                {props.goal == 'add' ? "Add" : "Update"}
+            </Button>
+            <Button type="cancel" onClick={() => props.setMode("display")}>
+                Cancel
+            </Button>
+        </Form></>
 
- 
+
 }
 
-function AnswerRow (props){
+function AnswerRow(props) {
     const ans = props.a;
-    return(
+    return (
         <tr>
-                <td>{ans.date.format('YYYY-MM-DD')}</td>
-                <td>{ans.text}</td>
-                <td>{ans.email}</td>
-                <td>{ans.score}</td>
-                <AnswerActionButtons enterEditMode={props.enterEditMode} enableButtons={props.enableButtons} answer={ans} upVote={props.upVote} delAnswer={props.delAnswer}/>
-              </tr>
+            <td>{ans.date.format('YYYY-MM-DD')}</td>
+            <td>{ans.text}</td>
+            <td>{ans.email}</td>
+            <td>{ans.score}</td>
+            <AnswerActionButtons enterEditMode={props.enterEditMode} enableButtons={props.enableButtons} answer={ans} upVote={props.upVote} delAnswer={props.delAnswer} />
+        </tr>
     )
 }
 
-function AnswerActionButtons(props) { 
+function AnswerActionButtons(props) {
 
     const user = useContext(UserContext)
 
 
     return <td>
-        <Button disabled={!props.enableButtons || !user.id || user.id==props.answer.userId} 
-        variant='primary' onClick={()=>props.upVote(props.answer.id)}><ArrowUpSquare/></Button> <></>
-        <Button disabled={!props.enableButtons || !user.id || user.id!=props.answer.userId}
-        variant='warning'><Pencil onClick={()=>props.enterEditMode(props.answer)}/></Button> <></>
-        <Button disabled={!props.enableButtons || !user.id || user.id!=props.answer.userId}
-        variant='danger' onClick={()=>props.delAnswer(props.answer.id)}><Trash/></Button>
+        <Button disabled={!props.enableButtons || !user.id || user.id == props.answer.userId}
+            variant='primary' onClick={() => props.upVote(props.answer.id)}><ArrowUpSquare /></Button> <></>
+        <Button disabled={!props.enableButtons || !user.id || user.id != props.answer.userId}
+            variant='warning'><Pencil onClick={() => props.enterEditMode(props.answer)} /></Button> <></>
+        <Button disabled={!props.enableButtons || !user.id || user.id != props.answer.userId}
+            variant='danger' onClick={() => props.delAnswer(props.answer.id)}><Trash /></Button>
     </td>
 }
 
-function AnswersDisplay (props){
+function AnswersDisplay(props) {
 
-    const [mode, setMode] = useState('display') ;
+    const [mode, setMode] = useState('display');
 
     const { questionId } = useParams()
 
-    const my_answers =props.answers // all of them
+    const my_answers = props.answers // all of them
     // const my_answers = props.answers.filter( ans => ans.questionId == questionId)
 
     return (
         <>
-        <Row>
-            <Col as='h2' className='text-start'>Answers for question {questionId}:</Col>
-            
-        </Row>
-        <Row>
-            <AnswersTable mode={mode} setMode={setMode} answers={my_answers} upVote={props.upVote} delAnswer={props.delAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer}></AnswersTable>
-        </Row>
+            <Row>
+                <Col as='h2' className='text-start'>Answers for question {questionId}:</Col>
+            </Row>
+            <Row>
+                <AnswersTable mode={mode} setMode={setMode} answers={my_answers} upVote={props.upVote} delAnswer={props.delAnswer} addAnswer={props.addAnswer} updateAnswer={props.updateAnswer}></AnswersTable>
+            </Row>
         </>
     )
 

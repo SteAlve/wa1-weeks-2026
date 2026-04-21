@@ -1,6 +1,6 @@
 import './custom.css'
 
-function Footer(){
+function Footer() {
     return (<>
         <p className='footer'>&copy; 2026 Applicazioni Web I</p>
     </>)
