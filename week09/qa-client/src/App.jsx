@@ -16,15 +16,15 @@ import { QuestionsList } from './components/QuestionDisplay.jsx';
 import UserContext from './contexts/UserContext.js';
 
 import { Answer, Question } from './models/QAModels.js';
+import { getQuestions } from './api/api.js';
 
 function App() {
-  const fakeQuestion = new Question(1, 'how are you?', 'me@mail.com', 24, '2025-04-01')
   const fakeAnswers = []
   fakeAnswers.push(new Answer(10, 'ok', 'a@b.com', 100, '2025-04-01', 1))
   fakeAnswers.push(new Answer(11, 'it crashes', 'c@b.com', 101, '2025-03-31'))
 
-  const [question, setQuestion] = useState(fakeQuestion) // will go away
   const [answers, setAnswers] = useState(fakeAnswers)
+
 
   const [questions, setQuestions] = useState([])
 
@@ -32,10 +32,17 @@ function App() {
 
   // read the full list of questions at application startup (when App mounts)
   useEffect( ()=>{
-    fetch('http://localhost:3001/api/questions').then(response => {
-      response.json().then(list_of_questions => setQuestions(list_of_questions) )
-    })
-  }, [] )
+    async function getQuestionList() {
+      try {
+      const list_of_questions = await getQuestions()
+      setQuestions(list_of_questions)
+      } catch(ex) {
+        // navigate away, and/or write a message , ...
+        navigate('/error')
+      }
+    }
+    getQuestionList()
+    }, [] )
 
 
   // Currently logged-in user
@@ -87,9 +94,9 @@ function App() {
           <Route path='/' element={<MainLayout doLogin={doLogin} />}>
             <Route index element={<LoginView />} />
             <Route path='home' element={<HomeView questions={questions} />} />
-            <Route path='answers/:questionId' element={<AnswersDisplay answers={answers}
-              upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer} />} />
+            <Route path='answers/:questionId' element={<AnswersDisplay />} />
             {/* <Route path='answers/:questionId/new' element={<AddAnswerForm/>}/> */}
+            <Route path='error' element={<h1>"Something is Wrong"</h1>}/>
           </Route>
         </Routes>
       </Container>

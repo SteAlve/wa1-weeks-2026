@@ -97,7 +97,7 @@ app.get("/api/questions/:id", async (req, res) => {
 app.get("/api/questions/:id/answers", async (req, res) => {
   try {
     const answers = await getAnswers(req.params.id);
-    res.json(answers);
+    setTimeout(()=>res.json(answers), 1000);
   } catch {
     res.status(500).end();
   }

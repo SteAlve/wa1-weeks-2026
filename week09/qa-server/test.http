@@ -2,6 +2,10 @@ GET http://localhost:3001/api/questions
 
 ###
 
+GET http://localhost:3001/api/questions/2/answers
+
+###
+
 POST http://localhost:3001/api/questions/2/answers
 content-type: application/json
 

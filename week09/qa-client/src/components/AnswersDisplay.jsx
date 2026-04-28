@@ -1,10 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { ArrowUpSquare, Pencil, Plus, Trash } from "react-bootstrap-icons";
 import { useParams } from 'react-router';
 
-import UserContext from "../contexts/UserContext";
 
+import UserContext from "../contexts/UserContext";
+import {getAnswersByQuestionId} from '../api/api'
 
 function AnswersTable(props) {
 
@@ -125,13 +126,28 @@ function AnswerActionButtons(props) {
 
 function AnswersDisplay(props) {
 
+    const [answers, setAnswers] = useState([])
+
     const [mode, setMode] = useState('display');
 
     const { questionId } = useParams()
 
-    const my_answers = props.answers // all of them
+    const [waiting, setWaiting] = useState(true)
+    useEffect(() => {
+        setWaiting(true)
+        getAnswersByQuestionId(questionId)
+            .then(answers => {
+                setAnswers(answers)
+                setWaiting(false)
+            })
+    }, [questionId])
+
+
+    const my_answers = answers // all of them
     // const my_answers = props.answers.filter( ans => ans.questionId == questionId)
 
+    if(waiting)
+        return <h2>Please wait...</h2>
     return (
         <>
             <Row>
