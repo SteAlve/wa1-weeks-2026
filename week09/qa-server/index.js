@@ -1,6 +1,7 @@
 // import
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import { listQuestions, getQuestion, getAnswers, addAnswer, updateAnswer, voteAnswer, getUser } from "./dao.js";
 import { check, validationResult } from "express-validator";
 
@@ -15,6 +16,7 @@ const port = 3001;
 // middlewares
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors())
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   const user = await getUser(username, password);

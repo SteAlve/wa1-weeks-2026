@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import dayjs from 'dayjs';
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router';
 
@@ -23,10 +23,20 @@ function App() {
   fakeAnswers.push(new Answer(10, 'ok', 'a@b.com', 100, '2025-04-01', 1))
   fakeAnswers.push(new Answer(11, 'it crashes', 'c@b.com', 101, '2025-03-31'))
 
-  const [question, setQuestion] = useState(fakeQuestion)
+  const [question, setQuestion] = useState(fakeQuestion) // will go away
   const [answers, setAnswers] = useState(fakeAnswers)
 
+  const [questions, setQuestions] = useState([])
+
   const navigate = useNavigate()
+
+  // read the full list of questions at application startup (when App mounts)
+  useEffect( ()=>{
+    fetch('http://localhost:3001/api/questions').then(response => {
+      response.json().then(list_of_questions => setQuestions(list_of_questions) )
+    })
+  }, [] )
+
 
   // Currently logged-in user
   const [user, setUser] = useState({ id: undefined, email: undefined, name: undefined })
@@ -76,7 +86,7 @@ function App() {
         <Routes>
           <Route path='/' element={<MainLayout doLogin={doLogin} />}>
             <Route index element={<LoginView />} />
-            <Route path='home' element={<HomeView questions={[question]} />} />
+            <Route path='home' element={<HomeView questions={questions} />} />
             <Route path='answers/:questionId' element={<AnswersDisplay answers={answers}
               upVote={upVote} delAnswer={delAnswer} addAnswer={addAnswer} updateAnswer={updateAnswer} />} />
             {/* <Route path='answers/:questionId/new' element={<AddAnswerForm/>}/> */}
