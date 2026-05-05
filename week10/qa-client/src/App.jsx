@@ -12,6 +12,7 @@ import AnswersDisplay from './components/AnswersDisplay.jsx';
 import Footer from './components/Footer.jsx';
 import Header from './components/Header.jsx';
 import { QuestionsList } from './components/QuestionDisplay.jsx';
+import { LoginForm, Logout } from './components/LoginForm.jsx';
 
 import UserContext from './contexts/UserContext.js';
 
@@ -48,8 +49,8 @@ function App() {
   // Currently logged-in user
   const [user, setUser] = useState({ id: undefined, email: undefined, name: undefined })
 
-  const doLogin = () => {
-    setUser({ id: 100, email: 'a@b.com', name: 'User-A' })
+  const doLogin = (newUser) => {
+    setUser({ id: newUser.id, email: newUser.username, name: newUser.name })
     navigate('/home')
   }
 
@@ -82,7 +83,6 @@ function App() {
 
   const updateAnswer = (id, text) => {
 
-
     setAnswers(oldAnswers => oldAnswers.map(ans => ans.id != id ? ans : { ...ans, text: text }))
 
   }
@@ -96,6 +96,8 @@ function App() {
             <Route path='home' element={<HomeView questions={questions} />} />
             <Route path='answers/:questionId' element={<AnswersDisplay />} />
             {/* <Route path='answers/:questionId/new' element={<AddAnswerForm/>}/> */}
+            <Route path='login' element={<LoginForm doLogin={doLogin}/>}/>
+            <Route path='logout' element={<Logout doLogin={doLogin}/>}/>
             <Route path='error' element={<h1>"Something is Wrong"</h1>}/>
           </Route>
         </Routes>

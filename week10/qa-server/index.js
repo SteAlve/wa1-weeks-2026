@@ -16,7 +16,12 @@ const port = 3001;
 // middlewares
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cors())
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true
+}
+app.use(cors(corsOptions))
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   const user = await getUser(username, password);
