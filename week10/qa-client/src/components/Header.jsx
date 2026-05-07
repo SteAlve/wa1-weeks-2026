@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { Button, Container, Navbar } from "react-bootstrap"
-import { Link } from 'react-router'
+import { Link, Links, useNavigate } from 'react-router'
 
 import UserContext from "../contexts/UserContext"
 
@@ -14,14 +14,22 @@ function Header(props) {
     <Navbar bg='info' >
       <Container fluid>
         <h1 style={{ color: 'white' }} ><Link to={destination}>HeapOverrun</Link></h1>
-        <p>{user.name || <LoginButton doLogin={props.doLogin} />}</p>
+        <p>{user.name ? <UserInfo name={user.name}/> : <LoginButton/>}</p>
       </Container>
     </Navbar>)
 }
 
 function LoginButton(props) {
-  return <Button onClick={() => props.doLogin()}>Log In</Button>
+  const navigate = useNavigate()
+
+  return <Button onClick={() => navigate('/login')}>Log In</Button>
 }
 
+function UserInfo(props) {
+  return <div>
+    <div>{props.name}</div>
+    <div><Link to='/logout'>Logout</Link></div>
+  </div>
+}
 
 export default Header
